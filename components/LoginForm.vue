@@ -33,6 +33,8 @@ const state = reactive({
   password: undefined
 })
 
+const authStore = useAuthStore()
+
 const generalErrors = ref<string | null>(null)
 
 async function onSubmit(event: FormSubmitEvent<Schema>) {
@@ -44,7 +46,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   if (response.status === 'fail') {
     generalErrors.value = response.data.error
   } else {
-    // TODO: redirect to dashboard
+    authStore.check()
   }
 }
 </script>

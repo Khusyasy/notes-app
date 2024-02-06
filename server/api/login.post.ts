@@ -24,6 +24,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const token = createJWTToken({ userId: user.id })
-  setCookie(event, 'token', token, { httpOnly: true, maxAge: 60 * 60 * 24 * 7 })
+  setCookie(event, 'token', token, { maxAge: 60 * 60 * 24 * 7 })
   return jsendSuccess(true)
 })

@@ -8,22 +8,27 @@
             <h2 class="text-white">Khus Notes</h2>
           </NuxtLink>
         </div>
-        <div class="flex flex-1 justify-end">
-          <UButton @click="isModalOpen = !isModalOpen">
+        <div class="flex flex-1 justify-end" v-if="!authStore.user">
+          <UButton @click="isAuthModalOpen = !isAuthModalOpen">
             Login
+          </UButton>
+        </div>
+        <div class="flex flex-1 justify-end" v-else>
+          <UButton>
+            Logout
           </UButton>
         </div>
       </nav>
     </header>
     <UContainer class="p-4" style="min-height: calc(100vh - 4rem);">
-      <div v-if="false">
+      <UCard v-if="authStore.user">
         Some content
-      </div>
+      </UCard>
       <UCard v-else>
         User is not logged in
       </UCard>
     </UContainer>
-    <UModal v-model="isModalOpen">
+    <UModal v-model="isAuthModalOpen">
       <UCard>
         <UTabs :items="items" class="w-full">
           <template #item="{ item }">
@@ -44,6 +49,9 @@
 </template>
 
 <script setup lang="ts">
+const authStore = useAuthStore()
+await authStore.check()
+
 const items = [{
   key: 'login',
   label: 'Login',
@@ -54,5 +62,11 @@ const items = [{
   description: 'Create a new account',
 }]
 
-const isModalOpen = ref(false)
+const isAuthModalOpen = ref(false)
+
+watchEffect(() => {
+  if (authStore.user && isAuthModalOpen.value) {
+    isAuthModalOpen.value = false
+  }
+})
 </script>
