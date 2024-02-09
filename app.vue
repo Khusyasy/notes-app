@@ -8,14 +8,17 @@
             <h2 class="text-white">Khus Notes</h2>
           </NuxtLink>
         </div>
-        <div class="flex flex-1 justify-end" v-if="!authStore.user">
-          <UButton @click="isAuthModalOpen = !isAuthModalOpen">
-            Login
+        <div class="flex flex-1 gap-4 items-center justify-end" v-if="authStore.user">
+          <div>
+            Logged in as, {{ authStore.user.name }}
+          </div>
+          <UButton @click="logout()">
+            Logout
           </UButton>
         </div>
         <div class="flex flex-1 justify-end" v-else>
-          <UButton>
-            Logout
+          <UButton @click="isAuthModalOpen = !isAuthModalOpen">
+            Login
           </UButton>
         </div>
       </nav>
@@ -69,4 +72,11 @@ watchEffect(() => {
     isAuthModalOpen.value = false
   }
 })
+
+async function logout() {
+  const response = await $fetch('/api/logout')
+  if (response.status === 'success') {
+    authStore.check()
+  }
+}
 </script>
