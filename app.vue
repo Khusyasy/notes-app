@@ -16,20 +16,22 @@
             Logout
           </UButton>
         </div>
-        <div class="flex flex-1 justify-end" v-else>
+        <div class="flex flex-1 gap-4 items-center justify-end" v-else>
           <UButton @click="isAuthModalOpen = !isAuthModalOpen">
             Login
           </UButton>
         </div>
       </nav>
     </header>
-    <UContainer class="p-4" style="min-height: calc(100vh - 4rem);">
-      <UCard v-if="authStore.user">
-        Some content
-      </UCard>
-      <UCard v-else>
-        User is not logged in
-      </UCard>
+    <UContainer class="p-4 flex justify-center" style="min-height: calc(100vh - 4rem);">
+      <div v-if="!authStore.user">
+        <UCard>
+          User is not logged in
+        </UCard>
+      </div>
+      <div class="max-w-[65ch] w-full h-min" v-else>
+        <NoteForm />
+      </div>
     </UContainer>
     <UModal v-model="isAuthModalOpen">
       <UCard>
