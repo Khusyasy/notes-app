@@ -1,7 +1,7 @@
 <template>
   <div @click.capture="handleFocus">
     <UCard class="w-full h-min overflow-clip !z-50 relative" :ui="{ body: { padding: '' } }">
-      <div class="flex flex-col" :state="noteFormStore">
+      <div class="flex flex-col">
         <input type="text" name="title" id="title" placeholder="Title" class="p-3 outline-none bg-transparent"
           v-model="noteFormStore.title" @focus="handleFocus" @blur="handleBlur" />
         <textarea name="content" id="content" placeholder="Take a note..."

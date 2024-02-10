@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 const authStore = useAuthStore()
-await authStore.check()
+useAsyncData(() => authStore.check())
 
 const items = [{
   key: 'login',
