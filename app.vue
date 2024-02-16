@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-900">
-    <header class="bg-gray-900 border-b border-gray-500 h-16 sticky top-0">
+  <div class="min-h-screen bg-slate-800">
+    <header class="bg-gray-900 border-b border-gray-500 h-16 sticky top-0 !z-40">
       <nav class="mx-auto px-4 flex items-center justify-between h-16 max-w-7xl" aria-label="Global">
         <div class="flex">
           <NuxtLink to="/" class="-m-1.5 p-1.5">
@@ -29,8 +29,9 @@
           User is not logged in
         </UCard>
       </div>
-      <div class="max-w-[65ch] w-full h-min" v-else>
+      <div class="w-full h-min flex flex-col items-center" v-else>
         <NoteForm />
+        <NoteList />
       </div>
     </UContainer>
     <UModal v-model="isAuthModalOpen">

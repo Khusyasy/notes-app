@@ -26,6 +26,7 @@ export const useNoteFormStore = defineStore('noteFormStore', {
           this.createdAt = new Date(response.data.createdAt)
           this.updatedAt = new Date(response.data.updatedAt)
         }
+        // TODO: loading / pending / error handling
       } else {              // update note
         const response = await $fetch(`/api/note/${this.id}`, {
           method: 'PUT',
@@ -37,8 +38,23 @@ export const useNoteFormStore = defineStore('noteFormStore', {
         if (response.status === 'success') {
           this.updatedAt = new Date(response.data.updatedAt)
         }
+        // TODO: loading / pending / error handling
       }
     },
+    changeNote(note: Required<NoteFormStore>) {
+      this.id = note.id
+      this.title = note.title
+      this.content = note.content
+      this.createdAt = note.createdAt
+      this.updatedAt = note.updatedAt
+    },
+    reset() {
+      this.id = undefined
+      this.title = ''
+      this.content = ''
+      this.createdAt = undefined
+      this.updatedAt = undefined
+    }
     // TODO: undo redo manager
   }
 })

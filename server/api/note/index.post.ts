@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const schema = z.object({
-  title: z.string().optional(),
+  title: z.string(),
   content: z.string(),
 })
 
@@ -10,6 +10,12 @@ export default defineEventHandler(async (event) => {
   if (!event.context.auth) {
     return jsendFail({
       error: 'Not authenticated',
+    })
+  }
+
+  if (title === '' && content === '') {
+    return jsendFail({
+      error: 'Title or content are required',
     })
   }
 
