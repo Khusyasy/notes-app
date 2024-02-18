@@ -1,69 +1,94 @@
-type NoteFormStore = {
-  id?: number;
+type Note = {
+  id: number;
   title: string;
   content: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  userId: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+type NoteFormStore = {
+  note: Note | null,
+  form: {
+    title: string;
+    content: string;
+  }
   loading: boolean;
   error: string;
 }
 
 export const useNoteFormStore = defineStore('noteFormStore', {
   state: (): NoteFormStore => ({
-    title: '',
-    content: '',
+    note: null,
+    form: {
+      title: '',
+      content: '',
+    },
     loading: false,
     error: '',
   }),
   actions: {
     async save() {
+      if (!this.form.title && !this.form.content) {
+        this.error = 'Title or content are required'
+        return
+      }
+      if (this.note
+        && (this.note.title === this.form.title)
+        && (this.note.content === this.form.content)) {
+        return
+      }
+
       this.loading = true
-      if (!this.id) {       // new note
+      if (!this.note) {       // new note
         const response = await $fetch('/api/note', {
           method: 'POST',
           body: {
-            title: this.title,
-            content: this.content,
+            title: this.form.title,
+            content: this.form.content,
           },
         })
         if (response.status === 'success') {
-          this.id = response.data.id
-          this.createdAt = new Date(response.data.createdAt)
-          this.updatedAt = new Date(response.data.updatedAt)
+          this.note = {
+            id: response.data.id,
+            title: response.data.title,
+            content: response.data.content,
+            userId: response.data.userId,
+            createdAt: new Date(response.data.createdAt),
+            updatedAt: new Date(response.data.updatedAt),
+          }
         } else {
           this.error = response.data.error
         }
       } else {              // update note
-        const response = await $fetch(`/api/note/${this.id}`, {
+        const response = await $fetch(`/api/note/${this.note.id}`, {
           method: 'PUT',
           body: {
-            title: this.title,
-            content: this.content,
+            title: this.form.title,
+            content: this.form.content,
           },
         })
         if (response.status === 'success') {
-          this.updatedAt = new Date(response.data.updatedAt)
+          this.note.title = response.data.title
+          this.note.content = response.data.content
+          this.note.updatedAt = new Date(response.data.updatedAt)
         } else {
           this.error = response.data.error
         }
       }
       this.loading = false
     },
-    changeNote(note: Required<Omit<NoteFormStore, "loading" | "error">>) {
-      this.id = note.id
-      this.title = note.title
-      this.content = note.content
-      this.createdAt = note.createdAt
-      this.updatedAt = note.updatedAt
+    changeNote(note: Note) {
+      this.note = note
+      this.form.title = note.title
+      this.form.content = note.content
       this.loading = false
       this.error = ''
     },
     reset() {
-      this.id = undefined
-      this.title = ''
-      this.content = ''
-      this.createdAt = undefined
-      this.updatedAt = undefined
+      this.note = null
+      this.form.title = ''
+      this.form.content = ''
       this.loading = false
       this.error = ''
     }
