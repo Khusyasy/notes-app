@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
       userId: event.context.auth?.id,
     },
     orderBy: {
-      updatedAt: 'desc',
+      createdAt: 'desc',
     },
   })
   return jsendSuccess(notes)
