@@ -1,6 +1,7 @@
 <template>
   <div class="pt-4 w-full flex flex-wrap justify-center items-center gap-4">
-    <UCard v-for="i in (noteStore.loading ? 8 : 0)" class="overflow-clip relative cursor-pointer" :key="i"
+    <!-- TODO: cari loading indikator yang lebih bagus -->
+    <!-- <UCard v-for="i in (noteStore.loading ? 8 : 0)" class="overflow-clip relative cursor-pointer" :key="i"
       :ui="{ body: { padding: '' } }">
       <div class="flex flex-col w-[30ch] min-h-[25ch]">
         <div class="p-3 outline-none bg-transparent">
@@ -10,7 +11,7 @@
           <USkeleton class="h-32 w-full" />
         </div>
       </div>
-    </UCard>
+    </UCard> -->
 
     <UCard v-for="note in noteStore.notes" class="overflow-clip relative cursor-pointer" :key="note.id"
       :ui="{ body: { padding: '' } }" @click="noteFormStore.changeNote(note)">
