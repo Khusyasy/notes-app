@@ -1,14 +1,17 @@
 <template>
-  <!-- <div v-if="pending">
-    Loading...
-  </div>
-  <div v-else-if="error">
-    {{ error.message }}
-  </div> -->
-  <!-- <div v-else-if="data?.status === 'fail'">
-    {{ data?.data.error }}
-  </div> -->
   <div class="pt-4 w-full flex flex-wrap justify-center items-center gap-4">
+    <UCard v-for="i in (noteStore.loading ? 8 : 0)" class="overflow-clip relative cursor-pointer" :key="i"
+      :ui="{ body: { padding: '' } }">
+      <div class="flex flex-col w-[30ch] min-h-[25ch]">
+        <div class="p-3 outline-none bg-transparent">
+          <USkeleton class="h-8 w-full" />
+        </div>
+        <div class="p-3 outline-none bg-transparent whitespace-pre-line">
+          <USkeleton class="h-32 w-full" />
+        </div>
+      </div>
+    </UCard>
+
     <UCard v-for="note in noteStore.notes" class="overflow-clip relative cursor-pointer" :key="note.id"
       :ui="{ body: { padding: '' } }" @click="noteFormStore.changeNote(note)">
       <div class="flex flex-col w-[30ch] min-h-[25ch]">
@@ -33,6 +36,13 @@
 const noteFormStore = useNoteFormStore()
 const noteStore = useNoteStore()
 useAsyncData(() => noteStore.getAll())
+
+const toast = useToast()
+watch(() => noteStore.error, () => {
+  if (noteStore.error) {
+    toast.add({ title: noteStore.error, color: 'red' })
+  }
+})
 </script>
 
 <style scoped>

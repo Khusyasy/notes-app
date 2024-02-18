@@ -52,6 +52,7 @@
       </UCard>
     </UModal>
   </div>
+  <UNotifications />
 </template>
 
 <script setup lang="ts">

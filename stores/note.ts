@@ -9,16 +9,19 @@ type Note = {
 
 type NoteStore = {
   notes: Note[];
-  // pending: boolean;
-  // error: string;
+  loading: boolean;
+  error: string;
 }
 
 export const useNoteStore = defineStore('noteStore', {
   state: (): NoteStore => ({
     notes: [],
+    loading: false,
+    error: 'test error',
   }),
   actions: {
     async getAll() {
+      this.loading = true
       const response = await $fetch('/api/note')
       if (response.status === 'success') {
         this.notes = response.data.map((note) => ({
@@ -29,9 +32,10 @@ export const useNoteStore = defineStore('noteStore', {
           createdAt: new Date(note.createdAt),
           updatedAt: new Date(note.updatedAt),
         }))
+      } else {
+        this.error = response.data.error
       }
-      // TODO: loading / pending handling
-      // TODO: error handling
+      this.loading = false
     }
   }
 })
