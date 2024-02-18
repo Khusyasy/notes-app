@@ -67,11 +67,19 @@ async function close() {
   handleBlur()
 }
 
-const hourFormat = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+const now = ref(Date.now())
+const interval = setInterval(() => {
+  now.value = Date.now()
+}, 1000)
+onUnmounted(() => {
+  clearInterval(interval)
+})
+
 const status = computed(() => {
   if (loading.value) return 'Saving...'
-  // TODO: make date a relative time
-  if (noteFormStore.id) return `Last saved at ${hourFormat.format(noteFormStore.updatedAt)}`
+  if (noteFormStore.updatedAt) {
+    return `Last saved ${relativeTime(noteFormStore.updatedAt, now.value)}`
+  }
   return 'Not saved'
 })
 

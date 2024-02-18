@@ -21,7 +21,7 @@
         <div class="flex flex-1"></div>
         <div class="flex justify-between items-center px-3 py-1 border-t border-gray-700">
           <div class="text-sm text-gray-400">
-            {{ note.updatedAt }}
+            {{ formatDate(note.createdAt) }}
           </div>
         </div>
       </div>
