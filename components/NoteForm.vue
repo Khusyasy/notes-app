@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: form input dibuat kayak modal gitu (?) -->
   <div class="max-w-[65ch] w-full" id="note-form">
     <div @click.capture="handleFocus">
       <UCard class="w-full h-min overflow-clip relative" :class="{ '!z-50': focused }" :ui="{ body: { padding: '' } }">
@@ -15,29 +16,45 @@
             </div>
             <button
               class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 rounded-md px-1 py-0.5 text-sm text-gray-400 bg-transparent hover:text-gray-200 hover:bg-slate-800 focus:bg-slate-800 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400 transition-all"
-              :disabled="noteFormStore.loading" @click="close" @focus="handleFocus" @blur="handleBlur">
+              :disabled="noteFormStore.loading" @click="close" @focus="handleFocus" @blur="close">
               Close
             </button>
           </div>
         </div>
       </UCard>
     </div>
-    <div class="fixed top-0 left-0 w-full h-full bg-black/30 !z-40" v-show="focused" @click="handleBlur"></div>
+    <div class="fixed top-0 left-0 w-full h-full bg-black/55 !z-40 transition-all opacity-0"
+      :class="{ 'opacity-100': focused }" v-show="focused" @click="close"></div>
   </div>
 </template>
 
 <script setup lang="ts">
 const focused = ref(false)
 const focusDebouncer = createDebouncer()
+// TODO: disable / enable scroll pas focused
 const handleFocus = focusDebouncer(() => {
   focused.value = true
 }, 100)
 const handleBlur = focusDebouncer(() => {
   focused.value = false
 }, 100)
+defineShortcuts({
+  escape: {
+    usingInput: true,
+    whenever: [focused],
+    handler: close
+  }
+})
 
 const noteFormStore = useNoteFormStore()
 const noteStore = useNoteStore()
+
+watch(() => noteFormStore.note, () => {
+  if (noteFormStore.note) {
+    handleFocus()
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+})
 
 const textareaRows = ref(1)
 watch(() => noteFormStore.form.content, () => {
