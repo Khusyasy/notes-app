@@ -15,7 +15,7 @@
             </div>
             <button
               class="focus:outline-none focus-visible:outline-0 disabled:cursor-not-allowed disabled:opacity-75 rounded-md px-1 py-0.5 text-sm text-gray-400 bg-transparent hover:text-gray-200 hover:bg-slate-800 focus:bg-slate-800 focus-visible:ring-1 focus-visible:ring-inset focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400 transition-all"
-              :disabled="loading" @click="close" @focus="handleFocus" @blur="handleBlur">
+              :disabled="noteFormStore.loading" @click="close" @focus="handleFocus" @blur="handleBlur">
               Close
             </button>
           </div>
@@ -46,15 +46,14 @@ watch(() => noteFormStore.content, () => {
   textareaRows.value = rows
 })
 
-const loading = ref(false)
-
 async function save() {
-  if (loading.value) return
-  if (noteFormStore.title === '' && noteFormStore.content === '') return
-  loading.value = true
+  if (noteFormStore.loading) return
+  if (!noteFormStore.title && !noteFormStore.content) {
+    noteFormStore.error = 'Title or content are required'
+    return
+  }
   await noteFormStore.save()
   await noteStore.getAll()
-  loading.value = false
 }
 const saveDebouncer = createDebouncer()
 const saveDebounced = saveDebouncer(save, 5 * 1000) // TODO: autosave kalo ada perubahan aja
@@ -76,7 +75,8 @@ onUnmounted(() => {
 })
 
 const status = computed(() => {
-  if (loading.value) return 'Saving...'
+  if (noteFormStore.loading) return 'Saving...'
+  if (noteFormStore.error) return noteFormStore.error
   if (noteFormStore.updatedAt) {
     return `Last saved ${relativeTime(noteFormStore.updatedAt, now.value)}`
   }
